@@ -5,9 +5,12 @@ pragma solidity ^0.8.30;
 contract KipuBank {
 
   mapping(address => uint) balances;
+  uint depositCount;
+  uint withdrawCount;
+  uint totalDeposits;
+
   uint immutable bankCapacity;
   uint immutable withdrawLimit;
-  uint totalDeposits;
 
   event Deposited(address account, uint256 amount);
   event Withdrawn(address account, uint256 amount);
@@ -25,6 +28,7 @@ contract KipuBank {
 
     balances[msg.sender] += _amount;
     totalDeposits += _amount;
+    depositCount++;
 
     emit Deposited(msg.sender, _amount);
   }
@@ -37,6 +41,7 @@ contract KipuBank {
 
     balances[msg.sender] -= _amount;
     totalDeposits -= _amount;
+    withdrawCount++;
 
     emit Withdrawn(msg.sender, _amount);
   }
