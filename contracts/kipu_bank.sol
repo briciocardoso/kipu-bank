@@ -45,4 +45,8 @@ contract KipuBank {
 
     emit Withdrawn(msg.sender, _amount);
   }
+
+  function getBalance(address account) external view returns (uint) {
+    return balances[account];
+  }
 }
