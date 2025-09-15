@@ -5,14 +5,19 @@ pragma solidity ^0.8.30;
 contract KipuBank {
 
   mapping(address => uint) balances;
+  uint immutable bankCapacity;
   uint immutable withdrawLimit;
   uint totalDeposits;
 
-  constructor(uint _withdrawLimit) {
+  constructor(uint _bankCapacity, uint _withdrawLimit) {
+    bankCapacity = _bankCapacity;
     withdrawLimit = _withdrawLimit;
   }
 
   function _makeDeposit(uint _amount) private {
+    if((totalDeposits + _amount) > bankCapacity)
+      revert("Bank capacity execeeded");
+
     balances[msg.sender] += _amount;
     totalDeposits += _amount;
   }
