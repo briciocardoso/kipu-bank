@@ -9,4 +9,8 @@ contract KipuBank {
   function _makeDeposit(uint _amount) private {
     balances[msg.sender] += _amount;
   }
+
+  function _makeWithdraw(uint _amount) private {
+    balances[msg.sender] -= _amount;
+  }
 }
