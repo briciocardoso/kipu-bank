@@ -15,6 +15,8 @@ contract KipuBank {
   }
 
   function _makeDeposit(uint _amount) private {
+    if (_amount == 0)
+      revert("Deposit amount is zero");
     if((totalDeposits + _amount) > bankCapacity)
       revert("Bank capacity execeeded");
 
@@ -23,6 +25,8 @@ contract KipuBank {
   }
 
   function _makeWithdraw(uint _amount) private {
+    if (_amount == 0)
+      revert("Withdrawal amount is zero");
     if(_amount > withdrawLimit)
       revert("Withdrawal amount exceeds limit");
 
