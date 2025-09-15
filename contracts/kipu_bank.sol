@@ -9,6 +9,9 @@ contract KipuBank {
   uint immutable withdrawLimit;
   uint totalDeposits;
 
+  event Deposited(address account, uint256 amount);
+  event Withdrawn(address account, uint256 amount);
+
   constructor(uint _bankCapacity, uint _withdrawLimit) {
     bankCapacity = _bankCapacity;
     withdrawLimit = _withdrawLimit;
@@ -22,6 +25,8 @@ contract KipuBank {
 
     balances[msg.sender] += _amount;
     totalDeposits += _amount;
+
+    emit Deposited(msg.sender, _amount);
   }
 
   function _makeWithdraw(uint _amount) private {
@@ -32,5 +37,7 @@ contract KipuBank {
 
     balances[msg.sender] -= _amount;
     totalDeposits -= _amount;
+
+    emit Withdrawn(msg.sender, _amount);
   }
 }
