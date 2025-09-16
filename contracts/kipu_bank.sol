@@ -3,14 +3,14 @@
 pragma solidity ^0.8.30;
 
 contract KipuBank {
-
-  mapping(address => uint) balances;
+  uint immutable bankCapacity;
+  uint immutable withdrawLimit;
+  
   uint depositCount;
   uint withdrawCount;
   uint totalDeposits;
 
-  uint immutable bankCapacity;
-  uint immutable withdrawLimit;
+  mapping(address => uint) balances;
 
   event Deposited(address account, uint256 amount);
   event Withdrawn(address account, uint256 amount);
