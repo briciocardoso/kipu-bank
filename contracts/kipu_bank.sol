@@ -32,6 +32,15 @@ contract KipuBank {
     _makeDeposit(msg.sender, msg.value);
   }
 
+  function withdraw(uint _amount) external {
+    if (_amount == 0)
+      revert("Withdrawal amount is zero");
+    if(_amount > withdrawLimit)
+      revert("Withdrawal amount exceeds limit");
+
+    _makeWithdraw(msg.sender, _amount);
+  }
+
   function _makeDeposit(address _account, uint _amount) private {
     balances[_account] += _amount;
     totalDeposits += _amount;
@@ -40,13 +49,8 @@ contract KipuBank {
     emit Deposited(_account, _amount);
   }
 
-  function _makeWithdraw(uint _amount) private {
-    if (_amount == 0)
-      revert("Withdrawal amount is zero");
-    if(_amount > withdrawLimit)
-      revert("Withdrawal amount exceeds limit");
-
-    balances[msg.sender] -= _amount;
+  function _makeWithdraw(address _account, uint _amount) private {
+    balances[_account] -= _amount;
     totalDeposits -= _amount;
     withdrawCount++;
 
