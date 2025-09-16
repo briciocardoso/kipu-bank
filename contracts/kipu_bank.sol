@@ -2,38 +2,71 @@
 
 pragma solidity ^0.8.30;
 
+/// @title KipuBank
+/// @author Bricio Cardoso
+/// @notice A simple contract where users can deposit, withdraw and check the balance ETH
+/// @dev Simulate a simple bank system
 contract KipuBank {
+  /// @notice The bank capacity amount to receive deposits in Wei
   uint immutable bankCapacity;
+  /// @notice The withdraw limit in Wei
   uint immutable withdrawLimit;
-  
+
+  /// @notice The number of deposits
   uint depositCount;
+  /// @notice The number of withdraws
   uint withdrawCount;
+  /// @notice The total value of deposits
   uint totalDeposits;
 
+  /// @notice The mapping of addresses to individual balances
   mapping(address => uint) balances;
 
+  /// @notice The event when a user makes a deposit
+  /// @param account The address of the account where the deposit was made
+  /// @param amount The amount that was deposited
   event Deposited(address account, uint256 amount);
+
+  /// @notice The event when a user makes a withdraw
+  /// @param account The address of the account where the withdraw was made
+  /// @param amount The amount that was withdrawn
   event Withdrawn(address account, uint256 amount);
 
+  /// @notice Error returned when the amount to deposit is zero
   error DepositAmountIsZero();
+  /// @notice Error returned when the bank capacity is exceeded
+  /// @param availableCapacity The available capacity in Wei
   error BankCapacityExceeded(uint availableCapacity);
+  /// @notice Error returned when the amount to withdraw is zero
   error WithdrawalAmountIsZero();
+  /// @notice Error returned when doesnt have enough balance
+  /// @param accountBalance The current balance from the account
   error WithdrawalInsufficientBalance(uint accountBalance);
+  /// @notice Error returned when the withdraw exceed the limit per transaction
+  /// @param amount The amount requested
+  /// @param withdrawLimit The limit to withdraw per transaction
   error WithdrawalAmountExceededLimit(uint amount, uint withdrawLimit);
+  /// @notice Error returned when a transfer failed
   error WithdrawalTransferFalied();
+  /// @notice Error returned when a function attempted to access an account through an unauthorized address
   error NotAccountOwner();
 
+  /// @notice The contract constructor
+  /// @param _bankCapacity The bank capacity amount to receive deposits in Wei
+  /// @param _withdrawLimit The withdraw limit in Wei
   constructor(uint _bankCapacity, uint _withdrawLimit) {
     bankCapacity = _bankCapacity;
     withdrawLimit = _withdrawLimit;
   }
 
+  /// @notice Restricts the execution of a function to the account owner
   modifier onlyAccountOwner(address account) {
     if (msg.sender != account)
       revert NotAccountOwner();
     _;
   }
 
+  /// @notice Allow deposit some value in the sender account
   function deposit() external payable {
     if (msg.value == 0)
       revert DepositAmountIsZero();
@@ -43,6 +76,8 @@ contract KipuBank {
     _makeDeposit(msg.sender, msg.value);
   }
 
+  /// @notice Allows withdraw some value from the sender account
+  /// @param _amount The amount in wei to be withdrawn
   function withdraw(uint _amount) external {
     uint accountBalance = balances[msg.sender];
     if(_amount > accountBalance)
@@ -55,6 +90,9 @@ contract KipuBank {
     _makeWithdraw(msg.sender, _amount);
   }
 
+  /// @notice Updates the contract state with the deposit
+  /// @param _account The account address to deposit
+  /// @param _amount The amount to deposit
   function _makeDeposit(address _account, uint _amount) private {
     balances[_account] += _amount;
     totalDeposits += _amount;
@@ -63,6 +101,9 @@ contract KipuBank {
     emit Deposited(_account, _amount);
   }
 
+  /// @notice Updates the contract state with the withdraw
+  /// @param _account The account address to withdraw
+  /// @param _amount The amount to withdraw
   function _makeWithdraw(address _account, uint _amount) private {
     balances[_account] -= _amount;
     totalDeposits -= _amount;
@@ -76,6 +117,8 @@ contract KipuBank {
     emit Withdrawn(msg.sender, _amount);
   }
 
+  /// @notice Returns the current balance from an account
+  /// @param account The address from an account
   function getBalance(address account) external view onlyAccountOwner(account) returns (uint) {
     return balances[account];
   }
