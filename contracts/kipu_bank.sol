@@ -21,10 +21,17 @@ contract KipuBank {
   error WithdrawalInsufficientBalance(uint accountBalance);
   error WithdrawalAmountExceededLimit(uint amount, uint withdrawLimit);
   error WithdrawalTransferFalied();
+  error NotAccountOwner();
 
   constructor(uint _bankCapacity, uint _withdrawLimit) {
     bankCapacity = _bankCapacity;
     withdrawLimit = _withdrawLimit;
+  }
+
+  modifier onlyAccountOwner(address account) {
+    if (msg.sender != account)
+      revert NotAccountOwner();
+    _;
   }
 
   function deposit() external payable {
@@ -69,7 +76,7 @@ contract KipuBank {
     emit Withdrawn(msg.sender, _amount);
   }
 
-  function getBalance(address account) external view returns (uint) {
+  function getBalance(address account) external view onlyAccountOwner(account) returns (uint) {
     return balances[account];
   }
 }
