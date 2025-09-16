@@ -20,17 +20,21 @@ contract KipuBank {
     withdrawLimit = _withdrawLimit;
   }
 
-  function _makeDeposit(uint _amount) private {
-    if (_amount == 0)
+  function deposit() external payable {
+    if (msg.value == 0)
       revert("Deposit amount is zero");
-    if((totalDeposits + _amount) > bankCapacity)
+    if((totalDeposits + msg.value) > bankCapacity)
       revert("Bank capacity execeeded");
 
-    balances[msg.sender] += _amount;
+    _makeDeposit(msg.sender, msg.value);
+  }
+
+  function _makeDeposit(address _account, uint _amount) private {
+    balances[_account] += _amount;
     totalDeposits += _amount;
     depositCount++;
 
-    emit Deposited(msg.sender, _amount);
+    emit Deposited(_account, _amount);
   }
 
   function _makeWithdraw(uint _amount) private {
