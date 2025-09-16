@@ -15,6 +15,9 @@ contract KipuBank {
   event Deposited(address account, uint256 amount);
   event Withdrawn(address account, uint256 amount);
 
+  error DepositAmountIsZero();
+  error BankCapacityExceeded(uint availableCapacity);
+
   constructor(uint _bankCapacity, uint _withdrawLimit) {
     bankCapacity = _bankCapacity;
     withdrawLimit = _withdrawLimit;
@@ -22,9 +25,9 @@ contract KipuBank {
 
   function deposit() external payable {
     if (msg.value == 0)
-      revert("Deposit amount is zero");
+      revert DepositAmountIsZero();
     if((totalDeposits + msg.value) > bankCapacity)
-      revert("Bank capacity execeeded");
+      revert BankCapacityExceeded(bankCapacity - totalDeposits);
 
     _makeDeposit(msg.sender, msg.value);
   }
