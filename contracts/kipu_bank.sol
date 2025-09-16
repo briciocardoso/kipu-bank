@@ -8,19 +8,19 @@ pragma solidity ^0.8.30;
 /// @dev Simulate a simple bank system
 contract KipuBank {
   /// @notice The bank capacity amount to receive deposits in Wei
-  uint immutable bankCapacity;
+  uint immutable public bankCapacity;
   /// @notice The withdraw limit in Wei
-  uint immutable withdrawLimit;
+  uint immutable public withdrawLimit;
 
   /// @notice The number of deposits
-  uint depositCount;
+  uint private depositCount;
   /// @notice The number of withdraws
-  uint withdrawCount;
+  uint private withdrawCount;
   /// @notice The total value of deposits
-  uint totalDeposits;
+  uint private totalDeposits;
 
   /// @notice The mapping of addresses to individual balances
-  mapping(address => uint) balances;
+  mapping(address => uint) private balances;
 
   /// @notice The event when a user makes a deposit
   /// @param account The address of the account where the deposit was made
