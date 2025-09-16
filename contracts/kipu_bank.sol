@@ -17,6 +17,9 @@ contract KipuBank {
 
   error DepositAmountIsZero();
   error BankCapacityExceeded(uint availableCapacity);
+  error WithdrawalAmountIsZero();
+  error WithdrawalInsufficientBalance(uint accountBalance);
+  error WithdrawalAmountExceededLimit(uint amount, uint withdrawLimit);
 
   constructor(uint _bankCapacity, uint _withdrawLimit) {
     bankCapacity = _bankCapacity;
@@ -33,10 +36,13 @@ contract KipuBank {
   }
 
   function withdraw(uint _amount) external {
+    uint accountBalance = balances[msg.sender];
+    if(_amount > accountBalance)
+        revert WithdrawalInsufficientBalance(accountBalance);
     if (_amount == 0)
-      revert("Withdrawal amount is zero");
+      revert WithdrawalAmountIsZero();
     if(_amount > withdrawLimit)
-      revert("Withdrawal amount exceeds limit");
+      revert WithdrawalAmountExceededLimit(_amount, withdrawLimit);
 
     _makeWithdraw(msg.sender, _amount);
   }
