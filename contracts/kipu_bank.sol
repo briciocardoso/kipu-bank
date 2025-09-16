@@ -20,6 +20,7 @@ contract KipuBank {
   error WithdrawalAmountIsZero();
   error WithdrawalInsufficientBalance(uint accountBalance);
   error WithdrawalAmountExceededLimit(uint amount, uint withdrawLimit);
+  error WithdrawalTransferFalied();
 
   constructor(uint _bankCapacity, uint _withdrawLimit) {
     bankCapacity = _bankCapacity;
@@ -59,6 +60,11 @@ contract KipuBank {
     balances[_account] -= _amount;
     totalDeposits -= _amount;
     withdrawCount++;
+
+    (bool success, ) = msg.sender.call{ value: _amount }("");
+
+    if (!success)
+      revert WithdrawalTransferFalied();
 
     emit Withdrawn(msg.sender, _amount);
   }
