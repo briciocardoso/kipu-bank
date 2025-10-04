@@ -60,8 +60,8 @@ contract KipuBank {
   }
 
   /// @notice Restricts the execution of a function to the account owner
-  modifier onlyAccountOwner(address account) {
-    if (msg.sender != account)
+  modifier onlyAccountOwner(address _account) {
+    if (msg.sender != _account)
       revert NotAccountOwner();
     _;
   }
@@ -118,8 +118,8 @@ contract KipuBank {
   }
 
   /// @notice Returns the current balance from an account
-  /// @param account The address from an account
-  function getBalance(address account) external view onlyAccountOwner(account) returns (uint) {
-    return balances[account];
+  /// @param _account The address from an account
+  function getBalance(address _account) external view onlyAccountOwner(_account) returns (uint) {
+    return balances[_account];
   }
 }
