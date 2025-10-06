@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.4;
+
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
 /// @title KipuBank
 /// @author Bricio Cardoso
 /// @notice A simple contract where users can deposit, withdraw and check the balance ETH
 /// @dev Simulate a simple bank system
-contract KipuBank {
+contract KipuBank is AccessControl {
   /// @notice The bank capacity amount to receive deposits in Wei
   uint immutable public bankCapacity;
   /// @notice The withdraw limit in Wei
@@ -54,7 +56,8 @@ contract KipuBank {
   /// @notice The contract constructor
   /// @param _bankCapacity The bank capacity amount to receive deposits in Wei
   /// @param _withdrawLimit The withdraw limit in Wei
-  constructor(uint _bankCapacity, uint _withdrawLimit) {
+  constructor(address defaultAdmin, uint _bankCapacity, uint _withdrawLimit) {
+    _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
     bankCapacity = _bankCapacity;
     withdrawLimit = _withdrawLimit;
   }
