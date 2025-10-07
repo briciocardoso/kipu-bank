@@ -22,6 +22,8 @@ contract BankFactory is AccessControl {
 
   mapping(address => address) internal priceFeeds;
 
+  mapping(address => bool) public isTokenAllowed;
+
   event TokenAdded(address indexed token, address indexed priceFeed);
 
   constructor(uint _usdBankCapacity, uint _usdWithdrawLimit) {    
@@ -33,6 +35,13 @@ contract BankFactory is AccessControl {
   function addToken(address _token, address _priceFeed) external onlyRole(DEFAULT_ADMIN_ROLE) {
     require(_token != address(0), "Cannot add ETH address again");
     priceFeeds[_token] = _priceFeed;
+    isTokenAllowed[_token] = false;
     emit TokenAdded(_token, _priceFeed);
+  }
+
+  function removeToken(address _token) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    require(_token != address(0), "Cannot remove ETH");
+    isTokenAllowed[_token] = false;
+    emit TokenRemoved(_token);
   }
 }
